@@ -1,0 +1,14 @@
+.signup-page { display:flex; justify-content:center; padding:32px 20px }
+.signup-form { width:100%; max-width:720px; background: rgba(255,255,255,0.02); padding:24px; border-radius:12px; border:1px solid rgba(255,255,255,0.03); color:#e6eef8 }
+.signup-form h2 { margin:0 0 14px 0 }
+.signup-form .row { display:flex; gap:12px }
+.signup-form .col { flex:1 }
+.signup-form label { display:block; margin-top:10px; color:#9fb4c8; font-size:13px }
+.signup-form input { width:100%; padding:10px 12px; margin-top:6px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:#0b1720; color:#d8e9f8 }
+.signup-error { margin-top:12px; background: rgba(255,48,48,0.06); color:#ffb3b3; padding:8px 10px; border-radius:8px }
+.actions { margin-top:18px; display:flex; justify-content:flex-end }
+.next-btn { background:#2b7cff; color:white; border:none; padding:10px 16px; border-radius:10px; font-weight:700 }
+
+.skip-btn { background:transparent; border:1px solid rgba(255,255,255,0.06); color:#cfe8ff; padding:8px 12px; border-radius:10px }
+
+@media (max-width:720px){ .signup-form .row { flex-direction:column } }
