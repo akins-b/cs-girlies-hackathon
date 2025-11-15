@@ -1,0 +1,18 @@
+.profile-tabs { background: transparent; padding: 12px 0 }
+.tabs-nav { display:flex; gap:12px; margin-bottom:16px }
+.tab { background: rgba(255,255,255,0.02); color:#cfe8ff; border: none; padding:8px 14px; border-radius:999px; cursor:pointer; font-weight:600 }
+.tab.active { background: linear-gradient(90deg,#111827,#0b1724); box-shadow: inset 0 -2px 0 rgba(43,124,255,0.2); color:#fff }
+.tabs-panel { background: transparent }
+.tab-content { padding:12px 0 }
+.mini-post { background: rgba(255,255,255,0.02); padding:14px; border-radius:10px; margin-bottom:12px }
+.mini-post-title { margin:0 0 6px 0; font-size:16px }
+.mini-post-excerpt { margin:0; color:#9fb4c8 }
+.empty { color:#9fb4c8; padding:18px 10px }
+
+@media (max-width:720px){ .tabs-nav { flex-wrap:wrap } }
+
+.tabs-search { margin-bottom:14px }
+.profile-search { width:100%; max-width:520px; padding:10px 14px; border-radius:12px; background: rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.02); color:#cfe8ff }
+.profile-search::placeholder{ color: rgba(207,232,255,0.25) }
+
+.visually-hidden { position:absolute !important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); white-space:nowrap }

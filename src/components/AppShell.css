@@ -1,3 +1,3 @@
-.app-shell-root { min-height:100vh; background: #07101a; color:#e6eef8 }
-.app-shell-grid { display:flex; gap:20px; padding:24px 28px; max-width:1200px; margin:0 auto }
-.app-shell-main { flex:1 }
+.app-shell-root { min-height:100vh; width:100%; background: #07101a; color:#e6eef8 }
+.app-shell-grid { display:flex; gap:20px; padding:24px 28px; max-width:1200px; margin:0 auto; align-items:flex-start; box-sizing:border-box }
+.app-shell-main { flex:1; padding-bottom:48px; box-sizing:border-box }

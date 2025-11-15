@@ -13,6 +13,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* sensible box-sizing for layout calculations */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -22,12 +27,18 @@ a:hover {
   color: #535bf2;
 }
 
+html, body, #root {
+  height: 100%;
+  background-color: #07101a; /* ensure the page background is consistent */
+}
+
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  /* page background (match app dark theme) - duplicated on root to avoid white gutters */
+  color: rgba(255,255,255,0.87);
+  overflow-x: hidden; /* prevent horizontal overflow that can reveal white gutters */
 }
 
 h1 {
@@ -57,7 +68,7 @@ button:focus-visible {
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
-    background-color: #ffffff;
+    /* do not force a white background on :root — let html/body/#root control page background */
   }
   a:hover {
     color: #747bff;
@@ -65,4 +76,18 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+/*
+  Some browser extensions inject a floating shadow-root container with id/class
+  like `otto-shadow-dom` which can render white corner blocks in the page.
+  Hide that element from the app so it can't visually interfere with the layout.
+  This is defensive and uses !important because it's targeting third-party injected DOM.
+*/
+#otto-shadow-dom,
+.otto-shadow-dom,
+div[id^="otto-shadow-dom"] {
+  display: none !important;
+  background: transparent !important;
+  pointer-events: none !important;
 }

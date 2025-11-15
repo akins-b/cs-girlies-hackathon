@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Feed from './pages/Feed.jsx'
 import NewPost from './pages/NewPost.jsx'
-import './App.css'
+import Profile from './pages/Profile.jsx'
 import AppShell from './components/AppShell.jsx'
+import './App.css'
 
 const initialPosts = [
   {
@@ -56,6 +57,8 @@ function App() {
             <Route path="/" element={<Navigate to="/home" replace />} />
             <Route path="/home" element={<Feed posts={posts} />} />
             <Route path="/new-post" element={<NewPost onCreate={handleCreatePost} />} />
+            <Route path="/profile" element={<Profile />} />
+
             <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>
         </AppShell>

@@ -1,0 +1,32 @@
+.profile-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:transparent;
+  padding:20px 24px;
+  border-radius:12px;
+  margin-bottom:18px;
+}
+.profile-left{ display:flex; align-items:center; gap:16px }
+.avatar-wrap{ width:72px; height:72px; border-radius:12px; overflow:hidden; background:#0f1724; display:flex; align-items:center; justify-content:center }
+.avatar-img{ width:100%; height:100%; object-fit:cover }
+.avatar-fallback{ color:#cfe8ff; font-weight:700; font-size:20px }
+.profile-meta{ display:flex; flex-direction:column }
+.profile-name{ font-weight:800; font-size:20px; color:#fff }
+.profile-username{ color:#9fb4c8; font-size:13px }
+
+.profile-stats{ display:flex; gap:20px; align-items:center }
+.xp-block{ min-width:220px }
+.xp-label{ color:#9fb4c8; font-size:12px }
+.xp-value{ font-weight:700; margin-top:4px }
+.xp-bar{ height:10px; background:rgba(255,255,255,0.03); border-radius:999px; margin-top:8px; overflow:hidden }
+.xp-fill{ height:100%; background: linear-gradient(90deg,#2b7cff,#6bdcff) }
+
+.streak-block{ text-align:right }
+.streak-label{ color:#9fb4c8; font-size:12px }
+.streak-value{ font-weight:800; font-size:16px }
+
+@media (max-width:720px){
+  .profile-header{ flex-direction:column; align-items:flex-start; gap:12px }
+  .profile-stats{ width:100%; justify-content:space-between }
+}
