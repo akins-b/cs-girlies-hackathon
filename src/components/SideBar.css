@@ -1,0 +1,17 @@
+.side-bar { width: 260px; padding: 12px }
+.profile-card { background:#08141a; padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.03) }
+.profile-name { font-weight:700; margin-bottom:4px }
+.profile-level { color:#9fb4c8; font-size:13px; margin-bottom:12px }
+.xp-section { margin-bottom:12px }
+.xp-row { display:flex; justify-content:space-between; align-items:center }
+.xp-label { font-size:12px }
+.xp-percent { font-weight:700 }
+.xp-bar { background:#0d2230; height:10px; border-radius:999px; margin-top:8px; overflow:hidden }
+.xp-fill { background:linear-gradient(90deg,#2b7cff,#6bdcff); height:100%; }
+.xp-count { font-size:12px; color:#9fb4c8; margin-top:8px }
+.stats { display:flex; flex-direction:column; gap:8px; margin-top:8px }
+.stat { display:flex; justify-content:space-between; align-items:center }
+.stat-label { font-size:12px; color:#9fb4c8 }
+.stat-value { font-weight:700 }
+.quick-links { margin-top:12px; display:flex; flex-direction:column; gap:8px }
+.link-btn { background:transparent; color:#cfe8ff; border:1px solid rgba(255,255,255,0.03); padding:8px; border-radius:8px; cursor:pointer; text-align:left }

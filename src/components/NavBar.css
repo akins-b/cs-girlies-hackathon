@@ -1,0 +1,26 @@
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 20px;
+  background: #0b1220; /* dark header */
+  color: #e6eef8;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.nav-left { display:flex; align-items:center; gap:16px }
+.brand { font-weight:700; color: #a8d1ff; text-decoration:none }
+.nav-links a { color: #cfe8ff; margin-right:12px; text-decoration:none }
+.nav-center { flex:1; display:flex; justify-content:center }
+.nav-search { width:60%; max-width:420px; padding:8px 12px; border-radius:20px; border:1px solid rgba(255,255,255,0.03); background:#0f1724; color:#fff }
+.nav-right { display:flex; align-items:center; gap:12px }
+.new-post { background:#2b7cff; color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer }
+.avatar { width:36px; height:36px; border-radius:50%; background:#1e293b; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:600 }
+
+.visually-hidden {
+  position: absolute !important;
+  height: 1px; width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
+}
