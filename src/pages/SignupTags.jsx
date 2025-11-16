@@ -35,14 +35,18 @@ function SignupTags(){
     // persist mock user
     const user = { ...formData, interests: selected }
     try{
-      localStorage.setItem('userProfile', JSON.stringify(user))
+      // save to per-username profiles so they can log in later
+      const rawMap = localStorage.getItem('user_profiles')
+      const map = rawMap ? JSON.parse(rawMap) : {}
+      if (user && user.username) map[user.username] = user
+      try{ localStorage.setItem('user_profiles', JSON.stringify(map)) }catch(e){}
+      // persist interests (used to seed/tailor feed)
       localStorage.setItem('userInterests', JSON.stringify(selected))
-      localStorage.setItem('userLoggedIn', 'true')
       // seed posts for the chosen interests if there are no posts yet
       trySeedPostsForInterests(selected)
     }catch(e){/* ignore */}
-    // navigate to home where feed will be tailored by localStorage interests
-    navigate('/home')
+    // after signup, redirect to login so user can sign in
+    navigate('/login')
   }
 
   const handleSkip = (e)=>{
@@ -50,13 +54,16 @@ function SignupTags(){
     // save minimal profile (without interests) and continue
     try{
       const user = formData ? { ...formData, interests: [] } : { username: 'guest', interests: [] }
-      localStorage.setItem('userProfile', JSON.stringify(user))
+      // save into per-username profiles so they can log in later
+      const rawMap = localStorage.getItem('user_profiles')
+      const map = rawMap ? JSON.parse(rawMap) : {}
+      if (user && user.username) map[user.username] = user
+      try{ localStorage.setItem('user_profiles', JSON.stringify(map)) }catch(e){}
       localStorage.setItem('userInterests', JSON.stringify([]))
-      localStorage.setItem('userLoggedIn', 'true')
       // seed some general starter posts if posts not present
       trySeedPostsForInterests([])
     }catch(e){}
-    navigate('/home')
+    navigate('/login')
   }
 
   // helper: seed sample posts for given interests when posts are empty

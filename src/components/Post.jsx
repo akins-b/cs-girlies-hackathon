@@ -100,10 +100,25 @@ function Post({ post }){
 
     const commentsCount = Array.isArray(commentsList) ? commentsList.length : (typeof comments === 'number' ? comments : 0)
 
+    // determine display name for author: show 'You' when this post belongs to the logged-in user
+    const displayAuthor = (()=>{
+        try{
+            const rawUser = localStorage.getItem('userProfile')
+            const u = rawUser ? JSON.parse(rawUser) : null
+            const authorLower = (author || '').toLowerCase()
+            const usernameLower = u && u.username ? (u.username || '').toLowerCase() : null
+            const nameLower = u && u.name ? (u.name || '').toLowerCase() : null
+            if (usernameLower && authorLower === usernameLower) return 'You'
+            if (nameLower && authorLower === nameLower) return 'You'
+            if (authorLower === 'you') return 'You'
+        }catch(e){ }
+        return author
+    })()
+
     return (
         <article className="post-card">
             <header className="post-card-header">
-                <div className="post-author">{ author }</div>
+                <div className="post-author">{ displayAuthor }</div>
                 <div className="post-meta">{ time }</div>
             </header>
 
@@ -117,11 +132,13 @@ function Post({ post }){
             </div>
 
             <footer className="post-card-footer">
-                <div className="post-actions">
+                <div className="post-actions-left">
                     <button aria-pressed={liked} onClick={toggleLike} className={`action ${liked ? 'liked' : ''}`}>
                         👍 {likesCount}
                     </button>
                     <button className="action" onClick={toggleComments}>💬 {commentsCount}</button>
+                </div>
+                <div className="post-actions-right">
                     <button aria-pressed={saved} aria-label={saved ? 'Unsave post' : 'Save post'} title={saved ? 'Unsave post' : 'Save post'} onClick={async ()=>{
                         try{
                             // toggle saved in userProfile.savedPosts

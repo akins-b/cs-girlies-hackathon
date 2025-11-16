@@ -25,11 +25,11 @@ function NavBar({ user }) {
 
             <div className="nav-center">
                 <label htmlFor="nav-search-input" className="visually-hidden">Search</label>
-                <input id='nav-search-input' className="nav-search" placeholder="Search topics, posts..." aria-label="Search" />
+                <input id='nav-search-input' className="nav-search" placeholder="Search topics, entries..." aria-label="Search" />
             </div>
             
             <div className="nav-right">
-                <Link to='/new-post' className="new-post" aria-label="Create new post">New Post</Link>
+                <Link to='/new-post' className="new-post" aria-label="Create new entry">New Entry</Link>
 
                 <Link to='/profile' className="avatar" aria-label='Your profile'>{initials}</Link>
                 

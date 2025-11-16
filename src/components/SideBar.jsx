@@ -66,15 +66,13 @@ function SideBar({ user }) {
                         <div className={`stat-value ${bump ? 'streak-bump' : ''}`}>🔥 {streak} Days</div>
                     </div>
                     <div className="stat">
-                        <div className="stat-label">Posts Created</div>
+                        <div className="stat-label">Entries Created</div>
                         <div className="stat-value">✍️ {postsCount}</div>
                     </div>
                 </div>
 
                 <div className="quick-links">
-                    <button className="link-btn">My Notes</button>
-                    <button className="link-btn">My Badges</button>
-                    <button className="link-btn">Saved Posts</button>
+                    <button className="link-btn my-notes" onClick={()=>{ window.location.href = '/notes' }}>My Notes</button>
                 </div>
             </div>
 

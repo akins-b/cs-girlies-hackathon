@@ -19,12 +19,12 @@ export default function ProfileTabs({ posts = [], savedPosts = [] }) {
   return (
     <section className="profile-tabs">
       <div className="tabs-nav">
-        <button
-          className={`tab ${active === 'posts' ? 'active' : ''}`}
-          onClick={() => setActive('posts')}
-        >
-          My Posts
-        </button>
+          <button
+            className={`tab ${active === 'posts' ? 'active' : ''}`}
+            onClick={() => setActive('posts')}
+          >
+            My Entries
+          </button>
         <button
           className={`tab ${active === 'achievements' ? 'active' : ''}`}
           onClick={() => setActive('achievements')}
@@ -45,7 +45,7 @@ export default function ProfileTabs({ posts = [], savedPosts = [] }) {
         <input
           id="profile-search"
           className="profile-search"
-          placeholder={active === 'posts' ? 'Search my posts...' : 'Search...'}
+          placeholder={active === 'posts' ? 'Search my entries...' : 'Search...'}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
@@ -67,7 +67,7 @@ export default function ProfileTabs({ posts = [], savedPosts = [] }) {
               (posts && posts.length) ? (
                 <p className="empty">No results. Try a different search.</p>
               ) : (
-                <p className="empty">No posts have been created.</p>
+                <p className="empty">No entries have been created.</p>
               )
             )}
           </div>
@@ -89,7 +89,7 @@ export default function ProfileTabs({ posts = [], savedPosts = [] }) {
                 </article>
               ))
             ) : (
-              <p className="empty">No saved posts yet.</p>
+              <p className="empty">No saved entries yet.</p>
             )}
           </div>
         )}

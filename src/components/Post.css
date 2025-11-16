@@ -28,10 +28,20 @@
 
 .post-tags { margin-top:12px }
 .post-tag { display:inline-block; background:#0f2a3a; padding:6px 8px; border-radius:8px; margin-right:8px; color:#9fd3ff; font-size:12px }
-.post-card-footer { margin-top:12px; display:flex; justify-content:flex-start }
-.post-actions .action { background:transparent; border:1px solid rgba(255,255,255,0.03); color:#cfe8ff; padding:6px 10px; border-radius:8px; margin-right:8px; cursor:pointer }
+.post-card-footer { margin-top:12px; display:flex; justify-content:space-between; align-items:center }
+/* keep the exact same visual styles as before for action buttons */
+.post-actions-left .action,
+.post-actions-right .action,
+.post-actions .action { background:transparent; border:1px solid rgba(255,255,255,0.03); color:#cfe8ff; padding:6px 10px; border-radius:8px; cursor:pointer }
+.post-actions-left .action { margin-right:8px }
+.post-actions-right { display:flex; align-items:center }
 .post-actions .action.save { color: #9fb4c8 }
 .post-actions .action.save.saved { color: #fff }
 /* Bookmark SVG styling: outline by default, filled when `.saved` present */
+/* also include left/right action containers so selectors match new markup */
+.post-actions-left .action.save svg,
+.post-actions-right .action.save svg,
 .post-actions .action.save svg { display:inline-block; vertical-align:middle; width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.4; transition: fill .12s ease, stroke .12s ease, transform .12s ease }
+.post-actions-left .action.save.saved svg,
+.post-actions-right .action.save.saved svg,
 .post-actions .action.save.saved svg { fill: currentColor; stroke: currentColor; transform: scale(1.03) }

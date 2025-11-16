@@ -6,6 +6,7 @@ import Profile from './pages/Profile.jsx'
 import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 import SignupTags from './pages/SignupTags.jsx'
+import Notes from './pages/Notes.jsx'
 import AppShell from './components/AppShell.jsx'
 import './App.css'
 
@@ -47,12 +48,13 @@ function App() {
   function handleCreatePost(post) {
     // give it an id and defaults
     // prefer to set the author to the logged-in user's username or name when available
+    // by default show 'You' for posts created while a user is logged in
     let author = post.author || 'You'
     try{
       const rawUser = localStorage.getItem('userProfile')
       if (rawUser){
-        const u = JSON.parse(rawUser)
-        author = u.username || u.name || author
+        // show 'You' as the author for the logged-in user's own posts
+        author = 'You'
       }
     }catch(e){}
 
@@ -167,6 +169,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/signup/tags" element={<SignupTags />} />
             <Route path="/new-post" element={<NewPost onCreate={handleCreatePost} />} />
+            <Route path="/notes" element={<Notes />} />
             <Route path="/profile" element={<Profile />} />
 
             <Route path="*" element={<Navigate to="/home" replace />} />

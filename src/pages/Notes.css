@@ -1,0 +1,14 @@
+/* Basic styling for the My Notes (drafts) page */
+.notes-page { padding: 20px; color: #e6f2fb; }
+.notes-page h1 { font-size: 22px; margin-bottom: 14px; }
+.empty { color: #9fb4c8; }
+.draft-list { display: flex; flex-direction: column; gap: 12px; }
+.draft-item { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding: 12px; border-radius: 8px; box-shadow: 0 4px 10px rgba(2,6,23,0.6); }
+.draft-meta { display:flex; justify-content:space-between; align-items:center; gap:12px }
+.draft-title { margin:0; font-size:16px }
+.draft-saved { color:#9fb4c8; font-size:12px }
+.draft-excerpt { margin:8px 0; color:#cfe8ff; opacity:0.9 }
+.draft-actions { display:flex; gap:8px }
+.btn-primary, .btn-secondary { cursor:pointer; border:0; padding:8px 10px; border-radius:6px }
+.btn-primary { background:#2b7cff; color:#fff }
+.btn-secondary { background:transparent; color:#cfe8ff; border:1px solid rgba(255,255,255,0.04) }

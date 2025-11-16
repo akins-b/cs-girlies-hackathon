@@ -5,7 +5,7 @@ function Feed({ posts = [] }) {
     if (!posts || posts.length === 0) {
         return (
             <main>
-                <p style={{ color: '#9fb4c8' }}>No posts yet — create the first one.</p>
+                <p style={{ color: '#9fb4c8' }}>No entries yet — create the first one.</p>
             </main>
         )
     }
