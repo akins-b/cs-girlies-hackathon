@@ -34,6 +34,10 @@ export function trySeedPostsForInterests(tags) {
       return {
         id: Date.now() + idx,
         author: sampleAuthors[idx % sampleAuthors.length],
+        // stable-ish identifier for seeded authors (used to compare ownership)
+        authorId: (sampleAuthors[idx % sampleAuthors.length] || '').toLowerCase().replace(/[^a-z0-9]/g, ''),
+        // stagger createdAt values so relative time looks reasonable
+        createdAt: Date.now() - ((idx + 1) * 60 * 60 * 1000),
         title: obj.title,
         content: obj.content,
         tags: obj.tags || [],

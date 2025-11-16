@@ -3,7 +3,7 @@ import './Post.css'
 import CommentsPanel from './CommentsPanel'
 
 function Post({ post }){
-    const { id, author, title, content, tags = [], likes = 0, comments = 0, time } = post
+    const { id, author, authorId, title, content, tags = [], likes = 0, comments = 0, time, createdAt } = post
     const [likesCount, setLikesCount] = useState(Number(likes) || 0)
     const [liked, setLiked] = useState(false)
     const [saved, setSaved] = useState(false)
@@ -100,26 +100,47 @@ function Post({ post }){
 
     const commentsCount = Array.isArray(commentsList) ? commentsList.length : (typeof comments === 'number' ? comments : 0)
 
-    // determine display name for author: show 'You' when this post belongs to the logged-in user
+    // determine display name for author: prefer an explicit authorId on the post
+    // If authorId matches the logged-in user's username or name, show 'You'.
+    // Otherwise fall back to previous string-based matching (for old posts without authorId).
     const displayAuthor = (()=>{
         try{
             const rawUser = localStorage.getItem('userProfile')
             const u = rawUser ? JSON.parse(rawUser) : null
+            if (authorId && u){
+                const aid = (authorId || '').toString()
+                if (aid && (aid === (u.username || '') || aid === (u.name || ''))) return 'You'
+            }
+            // fallback: string match as before
             const authorLower = (author || '').toLowerCase()
             const usernameLower = u && u.username ? (u.username || '').toLowerCase() : null
             const nameLower = u && u.name ? (u.name || '').toLowerCase() : null
             if (usernameLower && authorLower === usernameLower) return 'You'
             if (nameLower && authorLower === nameLower) return 'You'
             if (authorLower === 'you') return 'You'
-        }catch(e){ }
+        }catch(e){}
         return author
+    })()
+
+    // compute a friendly relative time using createdAt when available
+    const relativeTime = (()=>{
+        try{
+            if (createdAt) {
+                const delta = Math.floor((Date.now() - Number(createdAt)) / 1000)
+                if (delta < 60) return `${delta}s ago`
+                if (delta < 3600) return `${Math.floor(delta/60)}m ago`
+                if (delta < 86400) return `${Math.floor(delta/3600)}h ago`
+                return `${Math.floor(delta/86400)}d ago`
+            }
+        }catch(e){}
+        return time || ''
     })()
 
     return (
         <article className="post-card">
             <header className="post-card-header">
                 <div className="post-author">{ displayAuthor }</div>
-                <div className="post-meta">{ time }</div>
+                <div className="post-meta">{ relativeTime }</div>
             </header>
 
             <h3 className="post-title">{ title }</h3>
@@ -149,8 +170,19 @@ function Post({ post }){
                             const has = arr.includes(id)
                             const newArr = has ? arr.filter(x=>x!==id) : [...arr, id]
                             u.savedPosts = newArr
-                            try{ localStorage.setItem('userProfile', JSON.stringify(u)) }catch(e){}
-                            try{ window.dispatchEvent(new CustomEvent('userProfileUpdated', { detail: u })) }catch(e){}
+                            // optimistically update UI
+                            try{ setSaved(!has) }catch(e){}
+                                    try{ localStorage.setItem('userProfile', JSON.stringify(u)) }catch(e){}
+                                    // also persist into per-username profiles so saved posts survive logout/login
+                                    try{
+                                        const rawMap = localStorage.getItem('user_profiles')
+                                        const map = rawMap ? JSON.parse(rawMap) : {}
+                                        if (u && u.username) {
+                                            map[u.username] = u
+                                            try{ localStorage.setItem('user_profiles', JSON.stringify(map)) }catch(e){}
+                                        }
+                                    }catch(e){}
+                                    try{ window.dispatchEvent(new CustomEvent('userProfileUpdated', { detail: u })) }catch(e){}
                         }catch(err){ console.error('toggle save failed', err) }
                     }} className={`action save ${saved ? 'saved' : ''}`}>
                         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="18" height="18">

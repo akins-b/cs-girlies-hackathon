@@ -3,7 +3,10 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import './Signup.css'
 
 const AVAILABLE_TAGS = [
-  'React', 'JavaScript', 'Python', 'Data Science', 'Machine Learning', 'CSS', 'UX', 'DevOps', 'Blockchain', 'Databases', 'Cloud', 'Security', 'Design', 'Product', 'Algorithms'
+  'React', 'JavaScript', 'TypeScript', 'Python', 'Django', 'Flask', 'Data Science', 'Machine Learning', 'Deep Learning', 'NLP', 'Computer Vision',
+  'CSS', 'Sass', 'UX', 'UI', 'Accessibility', 'Design', 'Product', 'Algorithms', 'Data Engineering', 'Big Data', 'Databases', 'SQL', 'NoSQL',
+  'DevOps', 'Kubernetes', 'Docker', 'Cloud', 'AWS', 'GCP', 'Azure', 'Security', 'Blockchain', 'Cryptography', 'Mobile', 'iOS', 'Android',
+  'Testing', 'CI/CD', 'Performance', 'Analytics', 'Career', 'Entrepreneurship', 'Marketing'
 ]
 
 function SignupTags(){
@@ -33,7 +36,7 @@ function SignupTags(){
   const handleSubmit = (e)=>{
     e.preventDefault()
     // persist mock user
-    const user = { ...formData, interests: selected }
+  const user = { ...formData, interests: selected, xp: 0, xpGoal: 1000, streak: 0, longestStreak: 0, lastPostAt: null, savedPosts: [] }
     try{
       // save to per-username profiles so they can log in later
       const rawMap = localStorage.getItem('user_profiles')
@@ -53,7 +56,7 @@ function SignupTags(){
     e && e.preventDefault()
     // save minimal profile (without interests) and continue
     try{
-      const user = formData ? { ...formData, interests: [] } : { username: 'guest', interests: [] }
+  const user = formData ? { ...formData, interests: [], xp:0, xpGoal:1000, streak:0, longestStreak:0, lastPostAt:null, savedPosts:[], followers:[], following:[] } : { username: 'guest', interests: [], xp:0, xpGoal:1000, streak:0, longestStreak:0, lastPostAt:null, savedPosts:[], followers:[], following:[] }
       // save into per-username profiles so they can log in later
       const rawMap = localStorage.getItem('user_profiles')
       const map = rawMap ? JSON.parse(rawMap) : {}

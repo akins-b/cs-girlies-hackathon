@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import UserSection from '../components/UserSection.jsx'
 import ProfileTabs from '../components/ProfileTabs.jsx'
 
 function Profile(){
+    const { username: routeUsername } = useParams()
     const [user, setUser] = useState(()=>{
         try{
             const raw = localStorage.getItem('userProfile')
@@ -37,23 +39,39 @@ function Profile(){
         window.addEventListener('storage', onStorage)
         window.addEventListener('userProfileUpdated', onProfileUpdated)
         window.addEventListener('postsUpdated', onPostsUpdated)
-
+        const onUserProfilesUpdated = ()=>{
+            // trigger a re-render so displayUser picks up changes from localStorage.user_profiles
+            try{ const raw = localStorage.getItem('userProfile'); setUser(raw ? JSON.parse(raw) : null) }catch(e){}
+        }
+        window.addEventListener('user_profiles_updated', onUserProfilesUpdated)
+        
         return ()=>{
             window.removeEventListener('storage', onStorage)
             window.removeEventListener('userProfileUpdated', onProfileUpdated)
             window.removeEventListener('postsUpdated', onPostsUpdated)
+            window.removeEventListener('user_profiles_updated', onUserProfilesUpdated)
         }
     }, [])
 
-    // fallback user when not logged in
-    const displayUser = user || { name: 'Jordan Smith', username: 'jordansmith', avatar:'', xp:15420, xpGoal:20000, streak:45 }
+    // If this route includes a username param, show that user's profile (otherwise show logged-in user's)
+    const displayUser = (()=>{
+        try{
+            if (routeUsername) {
+                const rawMap = localStorage.getItem('user_profiles')
+                const map = rawMap ? JSON.parse(rawMap) : {}
+                const key = decodeURIComponent(routeUsername)
+                if (map && map[key]) return map[key]
+            }
+            return user || { name: 'Jordan Smith', username: 'jordansmith', avatar:'', xp:15420, xpGoal:20000, streak:45 }
+        }catch(e){ return user || { name: 'Jordan Smith', username: 'jordansmith', avatar:'', xp:15420, xpGoal:20000, streak:45 } }
+    })()
 
-    // Only show posts authored by the logged-in user in "My Posts"
+    // Only show posts authored by the displayed user in "My Posts"
     const authoredPosts = (()=>{
         try{
-            if (!user) return []
-            const usernameLower = user.username ? user.username.toLowerCase() : null
-            const nameLower = user.name ? user.name.toLowerCase() : null
+            if (!displayUser) return []
+            const usernameLower = displayUser.username ? displayUser.username.toLowerCase() : null
+            const nameLower = displayUser.name ? displayUser.name.toLowerCase() : null
             return (userPosts || []).filter(p => {
                 const author = (p.author || '').toLowerCase()
                 return (usernameLower && author === usernameLower) || (nameLower && author === nameLower) || author === 'you'
@@ -71,12 +89,27 @@ function Profile(){
         }catch(e){ return [] }
     })()
 
-    return (
-        <div>
-            <UserSection user={displayUser} />
-            <ProfileTabs posts={authoredPosts} savedPosts={savedPosts} />
-        </div>
-    )
+    // no-op: route-based navigation replaces previous localStorage-based viewUser approach
+
+    const isViewingOther = Boolean(routeUsername)
+
+    // defensive render: catch unexpected runtime errors and show a helpful message
+    try {
+        return (
+            <div>
+                <UserSection user={displayUser} isOther={isViewingOther} />
+                <ProfileTabs posts={authoredPosts} savedPosts={savedPosts} showSaved={!isViewingOther} />
+            </div>
+        )
+    } catch (err) {
+        console.error('Profile render error', err)
+        return (
+            <main style={{ padding: 20 }}>
+                <h2 style={{ color: '#fff' }}>Profile unavailable</h2>
+                <p style={{ color: '#9fb4c8' }}>An error occurred while rendering the profile. Check the browser console for details.</p>
+            </main>
+        )
+    }
 }
 
 export default Profile

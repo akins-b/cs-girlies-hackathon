@@ -26,7 +26,16 @@ function CommentsPanel({ postId, initialComments = [] }){
             const updated = posts.map(p=>{
                 if (p.id === postId){
                     const existing = Array.isArray(p.comments) ? p.comments : []
-                    const newComment = { id: Date.now(), author: (()=>{ try{ const r = localStorage.getItem('userProfile'); const u = r?JSON.parse(r):null; return (u && (u.username||u.name)) || 'You' }catch(e){return 'You'} })(), text: v, time: 'just now' }
+                    // include createdAt and authorId so comment metadata persists consistently
+                    const currentUser = (()=>{ try{ const r = localStorage.getItem('userProfile'); return r?JSON.parse(r):null }catch(e){return null} })()
+                    const newComment = {
+                        id: Date.now(),
+                        author: (currentUser && (currentUser.username || currentUser.name)) || 'You',
+                        authorId: (currentUser && (currentUser.username || currentUser.name)) ? String((currentUser.username||currentUser.name)).toLowerCase().replace(/[^a-z0-9]/g,'') : null,
+                        text: v,
+                        createdAt: Date.now(),
+                        time: 'just now'
+                    }
                     return { ...p, comments: [...existing, newComment] }
                 }
                 return p
@@ -41,6 +50,15 @@ function CommentsPanel({ postId, initialComments = [] }){
                     const currentXp = Number(u.xp || 0)
                     u.xp = currentXp + 30
                     try{ localStorage.setItem('userProfile', JSON.stringify(u)) }catch(e){}
+                    // also persist into per-username profiles so comment XP is not lost on logout/login
+                    try{
+                        const rawMap = localStorage.getItem('user_profiles')
+                        const map = rawMap ? JSON.parse(rawMap) : {}
+                        if (u && u.username) {
+                            map[u.username] = u
+                            try{ localStorage.setItem('user_profiles', JSON.stringify(map)) }catch(e){}
+                        }
+                    }catch(e){}
                     try{ window.dispatchEvent(new CustomEvent('userProfileUpdated', { detail: u })) }catch(e){}
                 }
             }catch(err){ console.error('award xp on comment failed', err) }

@@ -31,9 +31,27 @@ function Login(){
         const map = rawMap ? JSON.parse(rawMap) : null
         if (map && map[username]){
           const restored = map[username]
-          try{ localStorage.setItem('userProfile', JSON.stringify(restored)) }catch(e){}
+          // merge in any missing default fields so older/sparse profiles don't lose XP/streak data
+          const merged = {
+            xp: 0,
+            xpGoal: 1000,
+            streak: 0,
+            longestStreak: 0,
+            lastPostAt: null,
+            savedPosts: [],
+            followers: [],
+            following: [],
+            interests: [],
+            name: username,
+            username: username,
+            firstName: restored.firstName || username,
+            lastName: restored.lastName || '',
+            avatar: restored.avatar || '',
+            ...restored
+          }
+          try{ localStorage.setItem('userProfile', JSON.stringify(merged)) }catch(e){}
           try{ localStorage.setItem('userLoggedIn', 'true') }catch(e){}
-          try{ window.dispatchEvent(new CustomEvent('userProfileUpdated', { detail: restored })) }catch(e){}
+          try{ window.dispatchEvent(new CustomEvent('userProfileUpdated', { detail: merged })) }catch(e){}
           navigate('/home')
           return
         }
@@ -50,11 +68,25 @@ function Login(){
         xpGoal: 1000,
         streak: 0,
         longestStreak: 0,
+        lastPostAt: null,
+        savedPosts: [],
+        interests: [],
+        followers: [],
+        following: []
       }
       try{
         localStorage.setItem('userProfile', JSON.stringify(userProfile))
         localStorage.setItem('userLoggedIn', 'true')
         try{ window.dispatchEvent(new CustomEvent('userProfileUpdated', { detail: userProfile })) }catch(e){}
+      }catch(e){}
+      // persist into per-username profiles map for future logins
+      try{
+        const rawMap = localStorage.getItem('user_profiles')
+        const map = rawMap ? JSON.parse(rawMap) : {}
+        if (userProfile && userProfile.username) {
+          map[userProfile.username] = userProfile
+          try{ localStorage.setItem('user_profiles', JSON.stringify(map)) }catch(e){}
+        }
       }catch(e){}
       navigate('/home')
     }, 900)

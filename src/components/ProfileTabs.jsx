@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import './ProfileTabs.css'
 
-export default function ProfileTabs({ posts = [], savedPosts = [] }) {
+export default function ProfileTabs({ posts = [], savedPosts = [], showSaved = true }) {
   const [active, setActive] = useState('posts')
   const [query, setQuery] = useState('')
 
@@ -25,18 +25,15 @@ export default function ProfileTabs({ posts = [], savedPosts = [] }) {
           >
             My Entries
           </button>
-        <button
-          className={`tab ${active === 'achievements' ? 'active' : ''}`}
-          onClick={() => setActive('achievements')}
-        >
-          Achievements
-        </button>
-        <button
-          className={`tab ${active === 'saved' ? 'active' : ''}`}
-          onClick={() => setActive('saved')}
-        >
-          Saved
-        </button>
+        {/* Achievements tab removed per request */}
+        {showSaved && (
+          <button
+            className={`tab ${active === 'saved' ? 'active' : ''}`}
+            onClick={() => setActive('saved')}
+          >
+            Saved
+          </button>
+        )}
       </div>
 
       {/* Search input - filters current tab content (posts supported) */}
@@ -73,13 +70,9 @@ export default function ProfileTabs({ posts = [], savedPosts = [] }) {
           </div>
         )}
 
-        {active === 'achievements' && (
-          <div className="tab-content achievements">
-            <p className="empty">No achievements yet — start posting to earn badges!</p>
-          </div>
-        )}
+        {/* Achievements content removed */}
 
-        {active === 'saved' && (
+        {showSaved && active === 'saved' && (
           <div className="tab-content saved">
             {savedPosts && savedPosts.length ? (
               savedPosts.map((p) => (

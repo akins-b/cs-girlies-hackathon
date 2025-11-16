@@ -15,6 +15,11 @@
 .profile-name{ font-weight:800; font-size:20px; color:#fff }
 .profile-username{ color:#9fb4c8; font-size:13px }
 
+.follow-controls{ display:flex; align-items:center; gap:10px; margin-top:8px }
+.follow-btn{ background: linear-gradient(90deg,#2b7cff,#6bdcff); color:#051225; border:0; padding:8px 12px; border-radius:999px; font-weight:800; cursor:pointer }
+.follow-btn.following{ background:transparent; color:#cfe8ff; border:1px solid rgba(255,255,255,0.06) }
+.follow-counts{ color:#9fb4c8; font-size:12px }
+
 .profile-stats{ display:flex; gap:20px; align-items:center }
 .xp-block{ min-width:220px }
 .xp-label{ color:#9fb4c8; font-size:12px }

@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Feed from './pages/Feed.jsx'
 import NewPost from './pages/NewPost.jsx'
 import Profile from './pages/Profile.jsx'
+import PostPage from './pages/PostPage.jsx'
+import TagPage from './pages/TagPage.jsx'
 import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 import SignupTags from './pages/SignupTags.jsx'
@@ -48,19 +50,25 @@ function App() {
   function handleCreatePost(post) {
     // give it an id and defaults
     // prefer to set the author to the logged-in user's username or name when available
-    // by default show 'You' for posts created while a user is logged in
+    // prefer to set the author and an explicit authorId when available
     let author = post.author || 'You'
+    let authorId = null
     try{
       const rawUser = localStorage.getItem('userProfile')
       if (rawUser){
-        // show 'You' as the author for the logged-in user's own posts
-        author = 'You'
+        const u = JSON.parse(rawUser)
+        // use username when possible as a stable identifier
+        authorId = u.username || u.name || null
+        // store a human-readable author name (keep it consistent with previous behaviour)
+        author = u.username || u.name || author
       }
     }catch(e){}
 
     const newPost = {
       id: Date.now(),
       author,
+      authorId,
+      createdAt: Date.now(),
       title: post.title,
       content: post.content,
       tags: post.tags || [],
@@ -120,6 +128,15 @@ function App() {
           }
           try { 
             localStorage.setItem('userProfile', JSON.stringify(u))
+            // also persist per-username map so XP/streak survive logout/login
+            try{
+              const rawMap = localStorage.getItem('user_profiles')
+              const map = rawMap ? JSON.parse(rawMap) : {}
+              if (u && u.username) {
+                map[u.username] = u
+                try{ localStorage.setItem('user_profiles', JSON.stringify(map)) }catch(e){}
+              }
+            }catch(e){}
             console.debug('[App] Updated userProfile XP ->', u.xp)
             // notify other components in the same tab that the profile changed
             try { window.dispatchEvent(new CustomEvent('userProfileUpdated', { detail: u })) } catch(e){ console.error('dispatch userProfileUpdated failed', e) }
@@ -171,6 +188,9 @@ function App() {
             <Route path="/new-post" element={<NewPost onCreate={handleCreatePost} />} />
             <Route path="/notes" element={<Notes />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/:username" element={<Profile />} />
+            <Route path="/post/:id" element={<PostPage />} />
+            <Route path="/tag/:tag" element={<TagPage />} />
 
             <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>

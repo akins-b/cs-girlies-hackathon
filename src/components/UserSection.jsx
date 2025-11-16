@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react"
 import { useNavigate } from 'react-router-dom'
 import './UserSection.css'
 
-function UserSection({ user = {} }) {
+function UserSection({ user = {}, isOther = false }) {
     const {
         name = '',
         username = '',
@@ -46,6 +46,18 @@ function UserSection({ user = {} }) {
     const avatarRef = useRef(null)
     const menuRef = useRef(null)
     const [menuOpen, setMenuOpen] = useState(false)
+    const [isFollowing, setIsFollowing] = useState(false)
+
+    // when viewing another user, determine whether current logged-in user follows them
+    useEffect(()=>{
+        try{
+            const raw = localStorage.getItem('userProfile')
+            const current = raw ? JSON.parse(raw) : null
+            if (!current || !username) { setIsFollowing(false); return }
+            const following = Array.isArray(current.following) ? current.following : []
+            setIsFollowing(following.includes(username))
+        }catch(e){ setIsFollowing(false) }
+    }, [username])
 
     useEffect(()=>{
         const onDocClick = (e)=>{
@@ -64,6 +76,49 @@ function UserSection({ user = {} }) {
     }, [menuOpen])
 
     const navigate = useNavigate()
+
+    const toggleFollow = ()=>{
+        try{
+            const rawMe = localStorage.getItem('userProfile')
+            const me = rawMe ? JSON.parse(rawMe) : null
+            if (!me) { navigate('/login'); return }
+
+            const rawMap = localStorage.getItem('user_profiles')
+            const map = rawMap ? JSON.parse(rawMap) : {}
+
+            const target = map[username] ? map[username] : (user || null)
+            if (!target) return
+
+            const meFollowing = Array.isArray(me.following) ? [...me.following] : []
+            const targetFollowers = Array.isArray(target.followers) ? [...target.followers] : []
+
+            const already = meFollowing.includes(username)
+            if (already) {
+                // unfollow
+                const idx = meFollowing.indexOf(username)
+                if (idx > -1) meFollowing.splice(idx,1)
+                const tIdx = targetFollowers.indexOf(me.username)
+                if (tIdx > -1) targetFollowers.splice(tIdx,1)
+            } else {
+                // follow
+                meFollowing.push(username)
+                targetFollowers.push(me.username)
+            }
+
+            me.following = meFollowing
+            target.followers = targetFollowers
+
+            // persist both profiles
+            try{ localStorage.setItem('userProfile', JSON.stringify(me)) }catch(e){}
+            try{ map[me.username] = me; map[username] = target; localStorage.setItem('user_profiles', JSON.stringify(map)) }catch(e){}
+
+            // notify listeners
+            try{ window.dispatchEvent(new CustomEvent('userProfileUpdated', { detail: me })) }catch(e){}
+            try{ window.dispatchEvent(new CustomEvent('user_profiles_updated', { detail: { username } })) }catch(e){}
+
+            setIsFollowing(!already)
+        }catch(e){ console.error('toggleFollow failed', e) }
+    }
     const doLogout = () => {
         try{
             // persist profile per-username so it can be restored next login
@@ -91,13 +146,13 @@ function UserSection({ user = {} }) {
     return (
         <header className="profile-header">
             <div className="profile-left">
-                <div className="avatar-wrap" ref={avatarRef} role="button" tabIndex={0} aria-haspopup="true" aria-expanded={menuOpen} onClick={()=>setMenuOpen(s=>!s)} onKeyDown={(e)=>{ if (e.key==='Enter' || e.key===' ') { e.preventDefault(); setMenuOpen(s=>!s) } }}>
+                <div className="avatar-wrap" ref={avatarRef} role="button" tabIndex={0} aria-haspopup="true" aria-expanded={menuOpen} onClick={()=>{ if (!isOther) setMenuOpen(s=>!s) }} onKeyDown={(e)=>{ if ((e.key==='Enter' || e.key===' ') && !isOther) { e.preventDefault(); setMenuOpen(s=>!s) } }}>
                     {avatar ? (
                         <img src={avatar} alt={`${name || username} avatar`} className="avatar-img" />
                     ) : (
                         <div className="avatar-fallback">{getInitials()}</div>
                     )}
-                    {menuOpen && (
+                    {menuOpen && !isOther && (
                         <div className="avatar-menu" ref={menuRef} role="menu" aria-label="User menu">
                             <button className="avatar-menu-item logout" role="menuitem" onClick={doLogout}>Log out</button>
                         </div>
@@ -106,6 +161,12 @@ function UserSection({ user = {} }) {
                 <div className="profile-meta">
                     <div className="profile-name">{name || `${firstName} ${lastName}` || username}</div>
                     <div className="profile-username">@{username}</div>
+                    <div className="follow-controls">
+                        {isOther && (
+                            <button className={`follow-btn ${isFollowing ? 'following' : 'not-following'}`} onClick={toggleFollow} aria-pressed={isFollowing}>{isFollowing ? 'Following' : 'Follow'}</button>
+                        )}
+                        <div className="follow-counts">{(Array.isArray(user.followers)?user.followers.length:0)} followers • {(Array.isArray(user.following)?user.following.length:0)} following</div>
+                    </div>
                 </div>
             </div>
 
