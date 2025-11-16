@@ -6,10 +6,8 @@ A fun, simple, gamified learning journal designed to help students learn better 
 
 ## 🎥 Demo
 
-🔗 **Live Demo:** *add your Netlify/Vercel URL*
 
-
-📺 **Video Demo:** *add your YouTube link*
+📺 **Video Demo:** https://drive.google.com/file/d/1rVu3JrxTNSGi_b35yI5bME8QGQr7td16/view?usp=sharing
 
 
 📘 **Documentation:** (https://akandekehinde.gitbook.io/cs-girlies-hackathon-documentation/)
@@ -48,6 +46,17 @@ Built for the **“Make Learning Fun” — CS Girlies Hackathon (Nov 2025)**, L
 * Edit & delete entries anytime
 * **LocalStorage persistence** — everything is saved in the browser
 
+### Core Learning Features (detailed)
+
+- Entries (aka "entries" / formerly "posts") — create, edit, and delete short explanations of what you learned. Stored in localStorage under the `posts` key. (See: `src/pages/NewPost.jsx`, `src/components/Post.jsx`)
+- Tags & discovery — add tags to entries and browse by tag via `/tag/:tag`. Tag seeding and tag-based feed filtering are supported. (See: `src/pages/TagPage.jsx`, `src/components/NavBar.jsx`)
+- Drafts / My Notes — save drafts while composing and revisit them later. Drafts are persisted in `draftEntries` localStorage and exposed in `src/pages/Notes.jsx` and `src/components/NewPostForm.jsx`.
+- XP & streaks — lightweight motivation system: entries award XP and update a daily streak. XP and streaks are persisted per-username in `user_profiles` and in-session `userProfile` so progress survives logout. (See: `src/App.jsx`)
+- Save / Bookmark — users can save (bookmark) entries; saved post ids are stored on the profile (`savedPosts`) so saved lists survive logins. (See: `src/components/Post.jsx`)
+- Comments — entries support comments that include `authorId` and `createdAt`. Comment actions can award XP as well. (See: `src/components/CommentsPanel.jsx`)
+- Followers / Following — simple social layer so you can follow other users; following a user adds their entries into your feed. Profiles store `followers` and `following` arrays and follow/unfollow updates are persisted to `user_profiles`. (See: `src/components/UserSection.jsx`, `src/pages/Profile.jsx`)
+- Local-first, privacy-friendly — all data is stored in the browser (LocalStorage); no backend is required to run the app.
+
 ### 🔥 Motivation System
 
 * Daily learning **streak tracker**
@@ -70,13 +79,11 @@ Built for the **“Make Learning Fun” — CS Girlies Hackathon (Nov 2025)**, L
 
 ### **UI / Styling**
 
-* Tailwind CSS / CSS Modules / Material UI 
-* Icons (Lucide / HeroIcons / FontAwesome)
+* CSS 
 
 ### **Tools**
 
 * GitBook (project documentation)
-* Netlify or Vercel (deployment)
 
 ---
 
@@ -118,6 +125,22 @@ Built for the **“Make Learning Fun” — CS Girlies Hackathon (Nov 2025)**, L
 * Navbar
 * EntryEditor
 
+### Core Components (file map)
+
+- `src/pages/Feed.jsx` — main feed renderer (shows entries and now merges followed-users' entries)
+- `src/components/Post.jsx` — the entry card (renders title, content, footer actions like like/save/comment)
+- `src/pages/NewPost.jsx` & `src/components/NewPostForm.jsx` — compose new entries and save drafts
+- `src/pages/Profile.jsx` — profile view for the current user or any `/:username` route
+- `src/components/UserSection.jsx` — header area of profile (avatar, XP, streaks and follow button)
+- `src/components/ProfileTabs.jsx` — tabs for Posts / Saved / Notes inside a profile
+- `src/components/CommentsPanel.jsx` — comment UI and comment submission logic
+- `src/components/NavBar.jsx` — top navigation, search (people / tags / entries) and route helpers
+- `src/pages/PostPage.jsx` & `src/pages/TagPage.jsx` — dedicated pages for single entry and tag filtering
+- `src/pages/Notes.jsx` — drafts / My Notes listing and editor
+- `src/components/AppShell.jsx` & `src/App.jsx` — app shell, routing, and persistent handlers (XP/streak awarding, posts persistence)
+
+These components are intentionally small and local-first so you can reason about persistence in a browser environment.
+
 ---
 
 ## ⚙ **Installation**
@@ -125,8 +148,7 @@ Built for the **“Make Learning Fun” — CS Girlies Hackathon (Nov 2025)**, L
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/learnspace.git
-cd learnspace
+git clone https://github.com/akins-b/cs-girlies-hackathon
 ```
 
 ### 2️⃣ Install Dependencies
@@ -138,13 +160,13 @@ npm install
 ### 3️⃣ Start Development Server
 
 ```bash
-npm start
+npm run dev
 ```
 
 The app runs on:
 
 ```
-http://localhost:3000
+http://localhost:5173
 ```
 
 ---
@@ -169,17 +191,6 @@ learnspace/
 ```
 
 ---
-
-## 🖼 **Screenshots**
-
-Add images in a `/screenshots` folder, then reference like this:
-
-```
-![Home Page](screenshots/home.png)
-![Create Entry](screenshots/create-entry.png)
-![Entries List](screenshots/entries.png)
-![Progress Page](screenshots/progress.png)
-```
 
 ---
 
