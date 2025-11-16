@@ -62,7 +62,13 @@ export default function ProfileTabs({ posts = [] }) {
                 </article>
               ))
             ) : (
-              <p className="empty">No results. Try a different search.</p>
+              // If there are posts but none match the search, show a helpful message.
+              // If there are no posts at all, tell the user no posts have been created yet.
+              (posts && posts.length) ? (
+                <p className="empty">No results. Try a different search.</p>
+              ) : (
+                <p className="empty">No posts have been created.</p>
+              )
             )}
           </div>
         )}

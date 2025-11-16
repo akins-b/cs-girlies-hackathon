@@ -26,6 +26,20 @@ function Login(){
     setTimeout(()=>{
       setLoading(false)
       // simple mock: accept any credentials
+      const userProfile = {
+        name: username,
+        username: username,
+        firstName: username,
+        lastName: '',
+        avatar: '',
+        xp: 0,
+        xpGoal: 1000,
+        streak: 0,
+      }
+      try{
+        localStorage.setItem('userProfile', JSON.stringify(userProfile))
+        localStorage.setItem('userLoggedIn', 'true')
+      }catch(e){}
       navigate('/home')
     }, 900)
   }

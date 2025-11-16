@@ -1,0 +1,87 @@
+/* CommentsPanel styles - dark themed to match app */
+.comments-panel {
+  margin: 12px 0 0 0;
+  padding: 12px;
+  background: rgba(255,255,255,0.01);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+.comments-list {
+  max-height: 240px;
+  overflow: auto;
+  padding-right: 6px;
+  margin-bottom: 12px;
+}
+
+.comment-item {
+  padding: 10px 8px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.01);
+  margin-bottom: 8px;
+}
+
+.comment-meta {
+  color: #9fb4c8;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.comment-text {
+  color: #dbeaf6;
+  line-height: 1.4;
+}
+
+.no-comments {
+  color: #9fb4c8;
+  padding: 12px 8px;
+}
+
+.comment-input {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.comment-input textarea {
+  width: 100%;
+  min-height: 72px;
+  max-height: 160px;
+  resize: vertical;
+  padding: 10px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  color: #dbeaf6;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.comment-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.btn-primary, .btn-secondary {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background: #2b7cff;
+  color: #fff;
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.03);
+  color: #9fb4c8;
+}
+
+/* small screens */
+@media (max-width: 640px) {
+  .comments-panel { padding: 10px; }
+  .comment-input textarea { min-height: 64px; }
+}

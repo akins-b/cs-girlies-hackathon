@@ -3,28 +3,43 @@ import './UserSection.css'
 
 function UserSection({ user = {} }) {
     const {
-        name = 'Alex Doe',
-        username = 'alexdoe',
+        name = '',
+        username = '',
+        firstName = '',
+        lastName = '',
         avatar = '',
-        xp = 15420,
+        xp = 0,
         xpGoal = 20000,
-        streak = 45,
+        streak = 0,
     } = user
 
     const xpPercent = Math.round((xp / xpGoal) * 100)
+
+    const getInitials = () => {
+        // prefer firstName + lastName when available
+        if (firstName || lastName) {
+            const a = firstName ? firstName.trim()[0] : (name ? name.trim().split(' ')[0][0] : (username ? username[0] : 'A'))
+            const b = lastName ? lastName.trim()[0] : (firstName && firstName.trim().split(' ')[1] ? firstName.trim().split(' ')[1][0] : (name && name.trim().split(' ')[1] ? name.trim().split(' ')[1][0] : ''))
+            return ( (a || '') + (b || '') ).toUpperCase()
+        }
+        // fallback to name initials
+        if (name) return name.split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase()
+        // final fallback: username first two chars
+        return (username ? username.slice(0,2) : 'AD').toUpperCase()
+    }
 
     return (
         <header className="profile-header">
             <div className="profile-left">
                 <div className="avatar-wrap">
                     {avatar ? (
-                        <img src={avatar} alt={`${name} avatar`} className="avatar-img" />
+                        <img src={avatar} alt={`${name || username} avatar`} className="avatar-img" />
                     ) : (
-                        <div className="avatar-fallback">{name.split(' ').map(n => n[0]).slice(0,2).join('')}</div>
+                        <div className="avatar-fallback">{getInitials()}</div>
                     )}
                 </div>
                 <div className="profile-meta">
-                    <div className="profile-name">{name}</div>
+                    <div className="profile-name">{name || `${firstName} ${lastName}` || username}</div>
                     <div className="profile-username">@{username}</div>
                 </div>
             </div>
