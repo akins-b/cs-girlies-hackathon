@@ -81,6 +81,41 @@ function App() {
           const u = JSON.parse(rawUser)
           const currentXp = Number(u.xp || 0)
           u.xp = currentXp + 50 // +50 XP for creating a post
+
+          // update streak: if last post was 1 day (24h) ago -> increment
+          // if last post was same day -> don't change streak
+          // if last post was >1 day ago -> reset streak to 1
+          try {
+            const now = Date.now()
+            const last = Number(u.lastPostAt || 0)
+            const prevStreak = Number(u.streak || 0)
+            if (!last) {
+              // first recorded post
+              u.streak = 1
+            } else {
+              const daysDiff = Math.floor((now - last) / 86400000)
+              if (daysDiff === 0) {
+                // same 24-hour window/day, do not increment streak
+                u.streak = prevStreak || 0
+              } else if (daysDiff === 1) {
+                // user posted yesterday -> continue streak
+                  u.streak = prevStreak + 1
+              } else {
+                // missed more than a day -> reset streak
+                u.streak = 1
+              }
+            }
+            u.lastPostAt = now
+              // update longest streak if this new streak exceeds previous best
+              try{
+                  const prevBest = Number(u.longestStreak || 0)
+                  if (Number(u.streak || 0) > prevBest) u.longestStreak = Number(u.streak || 0)
+              }catch(e){}
+          } catch (e) {
+            // fallback: ensure streak exists
+            u.streak = Number(u.streak || 0)
+            try { u.lastPostAt = Date.now() } catch (err) {}
+          }
           try { 
             localStorage.setItem('userProfile', JSON.stringify(u))
             console.debug('[App] Updated userProfile XP ->', u.xp)

@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useRef, useState } from "react"
 import "./SideBar.css"
 
 function SideBar({ user }) {
@@ -29,6 +29,19 @@ function SideBar({ user }) {
     const levelLabel = level || `Level ${Math.max(1, Math.floor((xp || 0) / 1000) + 1)} Scholar`
     const progress = xpGoal ? Math.round((xp / xpGoal) * 100) : 0
 
+    // animation state: bump when streak increases
+    const [bump, setBump] = useState(false)
+    const prevStreakRef = useRef(streak)
+    useEffect(()=>{
+        const prev = prevStreakRef.current || 0
+        if (streak > prev) {
+            setBump(true)
+            const t = setTimeout(()=>setBump(false), 900)
+            return ()=> clearTimeout(t)
+        }
+        prevStreakRef.current = streak
+    }, [streak])
+
     return (
         <aside className="side-bar">
             <div className="profile-card">
@@ -50,7 +63,7 @@ function SideBar({ user }) {
                 <div className="stats">
                     <div className="stat">
                         <div className="stat-label">Daily Streak</div>
-                        <div className="stat-value">🔥 {streak} Days</div>
+                        <div className={`stat-value ${bump ? 'streak-bump' : ''}`}>🔥 {streak} Days</div>
                     </div>
                     <div className="stat">
                         <div className="stat-label">Posts Created</div>

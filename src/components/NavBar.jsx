@@ -19,11 +19,8 @@ function NavBar({ user }) {
     return (
         <header className="nav">
             <div className="nav-left">
-                <Link to='/' className="brand">LearnSpace</Link>
-                <nav className="nav-links">
-                    <Link to='/home'>Home</Link>
-                    <Link to="/explore-topics">Explore</Link>
-                </nav>
+                <Link to='/home' className="brand">LearnSpace</Link>
+                
             </div>
 
             <div className="nav-center">

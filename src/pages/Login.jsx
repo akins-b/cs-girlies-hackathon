@@ -25,7 +25,21 @@ function Login(){
     // simulate async login
     setTimeout(()=>{
       setLoading(false)
-      // simple mock: accept any credentials
+      // try to restore a per-username profile from 'user_profiles'
+      try{
+        const rawMap = localStorage.getItem('user_profiles')
+        const map = rawMap ? JSON.parse(rawMap) : null
+        if (map && map[username]){
+          const restored = map[username]
+          try{ localStorage.setItem('userProfile', JSON.stringify(restored)) }catch(e){}
+          try{ localStorage.setItem('userLoggedIn', 'true') }catch(e){}
+          try{ window.dispatchEvent(new CustomEvent('userProfileUpdated', { detail: restored })) }catch(e){}
+          navigate('/home')
+          return
+        }
+      }catch(e){}
+
+      // simple mock: accept any credentials and create fresh profile
       const userProfile = {
         name: username,
         username: username,
@@ -35,10 +49,12 @@ function Login(){
         xp: 0,
         xpGoal: 1000,
         streak: 0,
+        longestStreak: 0,
       }
       try{
         localStorage.setItem('userProfile', JSON.stringify(userProfile))
         localStorage.setItem('userLoggedIn', 'true')
+        try{ window.dispatchEvent(new CustomEvent('userProfileUpdated', { detail: userProfile })) }catch(e){}
       }catch(e){}
       navigate('/home')
     }, 900)

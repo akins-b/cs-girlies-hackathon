@@ -9,7 +9,7 @@
   border-bottom: 1px solid rgba(255,255,255,0.03);
 }
 .nav-left { display:flex; align-items:center; gap:16px }
-.brand { font-weight:700; color: #a8d1ff; text-decoration:none }
+.brand { font-weight:900; font-size:22px; color: #a8d1ff; text-decoration:none; letter-spacing:0.2px }
 .nav-links a { color: #cfe8ff; margin-right:12px; text-decoration:none }
 .nav-center { flex:1; display:flex; justify-content:center; position:relative }
 .nav-search { width:60%; max-width:420px; padding:8px 12px; border-radius:20px; border:1px solid rgba(255,255,255,0.03); background:#0f1724; color:#fff; position:relative; z-index:0 }

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import './ProfileTabs.css'
 
-export default function ProfileTabs({ posts = [] }) {
+export default function ProfileTabs({ posts = [], savedPosts = [] }) {
   const [active, setActive] = useState('posts')
   const [query, setQuery] = useState('')
 
@@ -81,7 +81,16 @@ export default function ProfileTabs({ posts = [] }) {
 
         {active === 'saved' && (
           <div className="tab-content saved">
-            <p className="empty">No saved posts yet.</p>
+            {savedPosts && savedPosts.length ? (
+              savedPosts.map((p) => (
+                <article key={p.id} className="mini-post">
+                  <h4 className="mini-post-title">{p.title}</h4>
+                  <p className="mini-post-excerpt">{p.content.slice(0, 120)}{p.content.length>120? '…':''}</p>
+                </article>
+              ))
+            ) : (
+              <p className="empty">No saved posts yet.</p>
+            )}
           </div>
         )}
       </div>

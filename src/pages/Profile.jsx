@@ -48,10 +48,33 @@ function Profile(){
     // fallback user when not logged in
     const displayUser = user || { name: 'Jordan Smith', username: 'jordansmith', avatar:'', xp:15420, xpGoal:20000, streak:45 }
 
+    // Only show posts authored by the logged-in user in "My Posts"
+    const authoredPosts = (()=>{
+        try{
+            if (!user) return []
+            const usernameLower = user.username ? user.username.toLowerCase() : null
+            const nameLower = user.name ? user.name.toLowerCase() : null
+            return (userPosts || []).filter(p => {
+                const author = (p.author || '').toLowerCase()
+                return (usernameLower && author === usernameLower) || (nameLower && author === nameLower) || author === 'you'
+            })
+        }catch(e){ return [] }
+    })()
+
+    const savedPosts = (()=>{
+        try{
+            if (!user) return []
+            const savedIds = Array.isArray(user.savedPosts) ? user.savedPosts : []
+            if (!savedIds.length) return []
+            const ids = savedIds.map(x => Number(x))
+            return (userPosts || []).filter(p => ids.includes(Number(p.id)))
+        }catch(e){ return [] }
+    })()
+
     return (
         <div>
             <UserSection user={displayUser} />
-            <ProfileTabs posts={userPosts} />
+            <ProfileTabs posts={authoredPosts} savedPosts={savedPosts} />
         </div>
     )
 }

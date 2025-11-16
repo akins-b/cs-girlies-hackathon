@@ -6,6 +6,7 @@ function Post({ post }){
     const { id, author, title, content, tags = [], likes = 0, comments = 0, time } = post
     const [likesCount, setLikesCount] = useState(Number(likes) || 0)
     const [liked, setLiked] = useState(false)
+    const [saved, setSaved] = useState(false)
     const [showComments, setShowComments] = useState(false)
     const [commentsList, setCommentsList] = useState(() => Array.isArray(comments) ? comments : [])
     const [commentText, setCommentText] = useState('')
@@ -26,6 +27,25 @@ function Post({ post }){
                 if (p && Array.isArray(p.comments)) setCommentsList(p.comments)
             }
         }catch(e){}
+    }, [id])
+
+    useEffect(()=>{
+        // track saved state per-user
+        try{
+            const rawUser = localStorage.getItem('userProfile')
+            const u = rawUser ? JSON.parse(rawUser) : null
+            const savedIds = u && Array.isArray(u.savedPosts) ? u.savedPosts : []
+            setSaved(Array.isArray(savedIds) && savedIds.includes(id))
+        }catch(e){}
+        const onProfileUpdated = (e)=>{
+            try{
+                const u = e && e.detail ? e.detail : (localStorage.getItem('userProfile') ? JSON.parse(localStorage.getItem('userProfile')) : null)
+                const savedIds = u && Array.isArray(u.savedPosts) ? u.savedPosts : []
+                setSaved(Array.isArray(savedIds) && savedIds.includes(id))
+            }catch(err){}
+        }
+        window.addEventListener('userProfileUpdated', onProfileUpdated)
+        return ()=> window.removeEventListener('userProfileUpdated', onProfileUpdated)
     }, [id])
 
     useEffect(()=>{
@@ -102,8 +122,28 @@ function Post({ post }){
                         👍 {likesCount}
                     </button>
                     <button className="action" onClick={toggleComments}>💬 {commentsCount}</button>
+                    <button aria-pressed={saved} aria-label={saved ? 'Unsave post' : 'Save post'} title={saved ? 'Unsave post' : 'Save post'} onClick={async ()=>{
+                        try{
+                            // toggle saved in userProfile.savedPosts
+                            const rawUser = localStorage.getItem('userProfile')
+                            if (!rawUser) return
+                            const u = JSON.parse(rawUser)
+                            const arr = Array.isArray(u.savedPosts) ? [...u.savedPosts] : []
+                            const has = arr.includes(id)
+                            const newArr = has ? arr.filter(x=>x!==id) : [...arr, id]
+                            u.savedPosts = newArr
+                            try{ localStorage.setItem('userProfile', JSON.stringify(u)) }catch(e){}
+                            try{ window.dispatchEvent(new CustomEvent('userProfileUpdated', { detail: u })) }catch(e){}
+                        }catch(err){ console.error('toggle save failed', err) }
+                    }} className={`action save ${saved ? 'saved' : ''}`}>
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="18" height="18">
+                            <path d="M6 2h12v18l-6-3-6 3V2z"/>
+                        </svg>
+                    </button>
                 </div>
             </footer>
+
+            
 
             {showComments && (
                 <CommentsPanel postId={id} initialComments={commentsList} />
